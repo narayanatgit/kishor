@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#000000" />
+<head>
+    <title>FORM Registration</title>
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+        th, td {
+          border: 1px solid black;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+      </style>
+</head>
+<body>
+
+              <h1>Enter Details</h1>
+              <form >
+
+                <label>Employee Name &nbsp;&nbsp;<input type="text" id="name" placeholder="enter the name" required/></label>
+                <br></br>
+                <label>Employee Id &nbsp;&nbsp;<input type="text" id="id" placeholder="enter the ID" required/></label>
+                <br></br>
+                <label>Employee Email Address &nbsp;&nbsp;<input type="email" id="email" placeholder="enter the Email" required/></label>
+                <br></br>
+                <label>Employee Phone &nbsp;&nbsp;<input type="number" id="phno" placeholder="enter the phno" required/></label>
+                <br></br>
+                <label>Employee Country &nbsp;&nbsp;<select onchange="update()" id="country" required><option value="">Select the option</option><option value="USA">USA</option><option value="INDIA">INDIA</option></select></label>
+                <br></br>
+                <label>Employee State &nbsp;&nbsp;<select id="state" required><option value="">Select the option</option></select></label>
+                <br></br>
+                <label>is Wheel Chair support Needed? &nbsp;&nbsp;<select id="chair" required><option value="">Select the option</option><option value="Yes">Yes</option><option value="No">No</option></select></label>
+                 <br>
+                 <br>
+                <button onclick="collect()">Submit</button>
+              </form>
+              <br>
+                 <br>
+                 <br>
+                 <br>
+                 <button onclick="View()">List</button>
+                 <br>
+                 <br>
+                 <br>
+                 <div id="view"></div>
+
+              <script>
+                            
+                            function update()
+                            {
+                                var i=document.getElementById('country').value
+
+                                var stateSelect = document.getElementById('state');
+                                var usaStates = ['New York', 'California', 'Texas']; 
+                                var indiaStates = ['Delhi', 'Mumbai', 'Bangalore']; 
+                                stateSelect.innerHTML = '<option value="">select the option</option>';
+                                if (i === 'USA') {
+                        usaStates.forEach(function(state) {
+                                    var option = document.createElement('option');
+                                    option.textContent = state;
+                                    option.value = state;
+                                    stateSelect.appendChild(option);
+                                                            });
+                                        } else if (i === 'INDIA') {
+                                            indiaStates.forEach(function(state) {
+                                            var option = document.createElement('option');
+                                            option.textContent = state;
+                                            option.value = state;
+                                            stateSelect.appendChild(option);
+                                            });
+                                             }
+                            }
+                 
+                            function collect(event)
+                            {
+                                const now = new Date();
+                                const expirationTime = now.getTime() + 6 * 60 * 60 * 1000;
+                                
+                                var name=document.getElementById('name').value
+                                var id=document.getElementById('id').value
+                            
+                                var email=document.getElementById('email').value
+                                var phno=document.getElementById('phno').value
+                                var country=document.getElementById('country') .value
+                                var state=document.getElementById('state').value
+                               var wheel=document.getElementById('chair').value
+
+                               const data={
+                                name:name,
+                                id:id,
+                                email:email,
+                                phno:phno,
+                                country:country,
+                                state:state,
+                                wheel:wheel
+                               }
+                               const item = {
+                                value: data,
+                                expiry: expirationTime,
+                                };
+                               localStorage.setItem(id, JSON.stringify(item));
+                            }
+
+                            function View()
+                            {
+
+                                const itemStr = localStorage.getItem('formData');
+                                
+                                const now = new Date();
+                                const items = {};
+                                for (let i = 0; i < localStorage.length; i++) {
+                                            const key = localStorage.key(i);
+                                           
+                                        const values = localStorage.getItem(key);
+                                        const item = JSON.parse(values);
+                                    
+                                        if (now.getTime() > item.expiry) { 
+                                        localStorage.removeItem(key);
+                                                return null;
+  }
+                                            else
+                                            {
+                                                items[key]=item
+                                            }
+                                            }
+
+                                 
+                             var ui=document.getElementById('view')
+                             const table = document.createElement('table');
+                             const tbody = document.createElement('tbody');
+                             const row = document.createElement('tr');
+
+                             
+                                
+                                const head1 = document.createElement('th');
+                                head1.textContent="Employee Name"
+
+                                const head2 = document.createElement('th');
+                                head2.textContent="Employee ID"
+                                const head3 = document.createElement('th');
+                                head3.textContent="Employee Email"
+                                const head4 = document.createElement('th');
+                                head4.textContent="Employee Phno"
+                                const head5 = document.createElement('th');
+                                head5.textContent="Employee Country"
+                                const head6 = document.createElement('th');
+                                head6.textContent="Employee State"
+                                const head7 = document.createElement('th');
+                                head7.textContent="is wheel chair need?"
+
+
+                               
+                               row.appendChild(head1)
+                                row.appendChild(head2)
+                                row.appendChild(head3)
+                                row.appendChild(head4)
+                                row.appendChild(head5)
+                                row.appendChild(head6)
+                                row.appendChild(head7)
+                                tbody.appendChild(row)
+                                
+                                for (const key in items) {
+                                    const row2 = document.createElement('tr');
+                                    const val=items[key].value
+                                    const td1 = document.createElement('td');
+                                    td1.textContent=val.name 
+                                    const td2 = document.createElement('td');
+                                    td2.textContent=val.id
+                                    const td3 = document.createElement('td');
+                                    td3.textContent=val.email
+                                    const td4 = document.createElement('td');
+                                    td4.textContent=val.phno 
+                                    const td5 = document.createElement('td');
+                                    td5.textContent=val.country
+                                    const td6 = document.createElement('td');
+                                    td6.textContent=val.state
+                                    const td7 = document.createElement('td');
+                                    td7.textContent=val.wheel
+                                    row2.appendChild(td1)
+                                    row2.appendChild(td2)
+                                    row2.appendChild(td3)
+                                    row2.appendChild(td4)
+                                    row2.appendChild(td5)
+                                    row2.appendChild(td6)
+                                    row2.appendChild(td7)
+                                    tbody.append(row2)
+
+                                }
+                               
+                             table.appendChild(tbody)
+                             ui.appendChild(table)
+                                 
+                            }
+                </script>
+
+</body>
+
+
+</html>
